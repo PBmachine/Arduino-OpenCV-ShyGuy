@@ -2,6 +2,7 @@
 
 const byte numChars = 16;
 char receivedChars[numChars];
+char tempChars[numChars]; 
 int msgInt = 0; 
 char msgChars[numChars] = {0};
 bool newData = false;
@@ -10,12 +11,13 @@ bool newData = false;
 //states = [hiding,waiting,dancing]
 int state = 1;
 int motion = 0;
-int control_pin = 4; 
+int control_pin = 5; 
+int led = 6;
 
 unsigned long motortimer;
 unsigned long timershimmy;
 
-int motor_period = 6; 
+int motorperiod = 6; 
 bool motorOn = false;
 
 void setup()
@@ -46,15 +48,15 @@ void runMotor(){
       motorOn = false;
       motortimer = millis();
     }
-    digitalWrite(control_pin,HIGH)
+    digitalWrite(control_pin,HIGH);
   }
   else{
     if ((millis()-motortimer)>= offdelay){
       motorOn = true;
       motortimer = millis();
-      digitalWrite(control_pin,HIGH)
+      digitalWrite(control_pin,HIGH);
     }
-    digitalWrite(control_pin,LOW)
+    digitalWrite(control_pin,LOW);
 
   }
     
@@ -69,19 +71,19 @@ void runGuy(){
       digitalWrite(control_pin, LOW);
       break;
     case 1:
-      runMotor(motion)
+      runMotor();
       break;
     case 2:
-      runMotor(motion)
+      runMotor();
       break;
   }
 }
 
 
-void executeMessage(new_int,new_chars){
+void executeMessage(int new_int,char new_char){
   bool newValues = false;
   int new_state;
-  switch(new_chars[0]){
+  switch(new_char){
     case 'D':
       new_state = 2;
       break;
@@ -104,12 +106,12 @@ void parseMessage()
 {
 char *msgNdx; // pointer index for parsing input message into tokens
 msgNdx = strtok(tempChars, ":,"); //split on : , 
-strcpy(msgString, msgNdx); //store first part of message as char
+strcpy(msgChars, msgNdx); //store first part of message as char
 msgChars[0] &= 0xDF;
 msgChars[1] &= 0xDF; //make chars uppercase
 msgNdx = strtok(NULL, ":,"); //continue tokenizing message
 msgInt = atoi(msgNdx); //store next part of message as int
-executeMessage(msgInt,msgChars);
+executeMessage(msgInt,msgChars[0]);
 }
 
 void recvWithStartEndMarkers() {
