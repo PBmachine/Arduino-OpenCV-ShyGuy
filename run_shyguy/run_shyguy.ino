@@ -17,7 +17,8 @@ int led = 6;
 unsigned long motortimer;
 unsigned long timershimmy;
 
-int motorperiod = 6; 
+int motorperiod = 8; 
+int  dancestart = 8; 
 bool motorOn = false;
 
 void setup()
@@ -27,6 +28,16 @@ void setup()
   pinMode(control_pin, OUTPUT);
   pinMode(led, OUTPUT);
   digitalWrite(led, HIGH);
+  digitalWrite(control_pin,LOW);
+}
+
+void runMotor(bool setOn){
+  if(setOn){
+    digitalWrite(control_pin,HIGH);
+  }
+  else{
+    digitalWrite(control_pin,LOW);
+  }
 }
 
 void loop() {
@@ -39,24 +50,25 @@ void loop() {
     runGuy();
 }
 
-void runMotor(){
-  int ondelay = 1000*map(motion,0,100,0.1,motorperiod);
-  int offdelay = (motorperiod*1000 -ondelay)+100;
+void motorDrive(){
+  
+  int ondelay = 1000*(map(motion,0,100,1,motorperiod));
+  int offdelay = 50+map(motion,0,100,800,150);
 
   if(motorOn){
     if ((millis()-motortimer)>= ondelay){
       motorOn = false;
       motortimer = millis();
     }
-    digitalWrite(control_pin,HIGH);
+    runMotor(true);
   }
   else{
     if ((millis()-motortimer)>= offdelay){
       motorOn = true;
       motortimer = millis();
-      digitalWrite(control_pin,HIGH);
+      runMotor(true);
     }
-    digitalWrite(control_pin,LOW);
+    runMotor(false);
 
   }
     
@@ -68,13 +80,13 @@ void runGuy(){
     case 0:
     //hiding
       motion = 0; 
-      digitalWrite(control_pin, LOW);
+      runMotor(false);
       break;
     case 1:
-      runMotor();
+      motorDrive();
       break;
     case 2:
-      runMotor();
+      motorDrive();
       break;
   }
 }
@@ -96,9 +108,15 @@ void executeMessage(int new_int,char new_char){
   }
   if (new_state != state){
     state = new_state;
+    newValues = true; 
   }
   if (new_int != motion){
     motion = new_int;
+  }
+  if(new_state == 2 && newValues){
+    motorOn = true;
+    runMotor(true);
+    motortimer = millis()-dancestart*1000;
   }
 }
 

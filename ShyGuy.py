@@ -17,10 +17,10 @@ class shyguy(object):
         self.prev_motion = 0.2
 
     def shyness_param(self):
-        self.motion_tol = 3 #tolerance for num of moving objects
-        self.face_tol = 0 #tolerance for num of faces
-        self.waitdelay = 5*1000
-        self.hidedelay = 5*1000
+        self.motion_tol = 1.2#tolerance for num of moving objects
+        self.face_tol = 0.4 #tolerance for num of faces
+        self.waitdelay = 0.5*1000
+        self.hidedelay = 3*1000
         self.dancemax = 3*60*1000
         self.movement= 0.2 #percentage movement
 

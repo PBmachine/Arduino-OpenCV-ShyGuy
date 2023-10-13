@@ -15,13 +15,13 @@ import cv2
 import ShyGuy
 import utils
 """
-Arduino connected at port No. COM28,
+update port
 Confirm and change this value accordingly from control panel
 Baud Rate = 9600
 """
 
 
-arduino_port = 'COM3'
+arduino_port = 'COM10'
 arduino = serial.Serial(arduino_port, 9600)
 time.sleep(2) # waiting the initialization...
 # print("initialised")
@@ -51,7 +51,7 @@ def send(state,motion):
 
 
 def processImage(img,resize=False):
-    blur = 13 #must be odd!
+    blur = 17 #must be odd!
     #returns a greyscale and blurred image from input
     if(resize):
         img = cv2.resize(img,(500,400))
@@ -77,7 +77,7 @@ def findFace(img):
     #detect faces
     faces = face_cascade.detectMultiScale(img,
     scaleFactor = 1.05,
-    minNeighbors = 5,
+    minNeighbors = 7,
     minSize=(30, 30),
     maxSize=(500,500)
     )
